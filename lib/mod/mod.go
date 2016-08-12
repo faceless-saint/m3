@@ -44,10 +44,10 @@ func New(mod *Raw) (net.Downloadable, error) {
 	base := RemoteMod{mod.Name, mod.Version, hashsum[1], h, mod.Url}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * When defining new mod types, add their initialization checks  *
-	 * here to allow them to be loaded dynamically. They should be   *
-     * specified in decending order of preference.                   *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		 * When defining new mod types, add their initialization checks  *
+		 * here to allow them to be loaded dynamically. They should be   *
+	     * specified in decending order of preference.                   *
+		 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	switch {
 	// Use a CurseMod value.
 	case mod.Curse != "":
@@ -67,7 +67,7 @@ func New(mod *Raw) (net.Downloadable, error) {
 
 // RemoteMod values represent mod files hosted at a generic URL.
 type RemoteMod struct {
-    Name     string
+	Name     string
 	Version  string
 	checksum string
 	hash     hash.Hash
@@ -92,7 +92,7 @@ func (this *RemoteMod) Filename() string {
 // can either be the full download URL or the Curse file ID.
 type CurseMod struct {
 	RemoteMod
-    // Curse is the file download ID on Curseforge.
+	// Curse is the file download ID on Curseforge.
 	Curse string
 }
 

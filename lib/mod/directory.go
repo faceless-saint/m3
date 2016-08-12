@@ -11,10 +11,10 @@ import (
 
 // Directory values represent definitions for a mod directory.
 type Directory struct {
-    // Ignore is a list of file names to skip during directory cleaning.
+	// Ignore is a list of file names to skip during directory cleaning.
 	Ignore []string
-    // Items is a list of definitions for downloadable mod files.
-	Items  net.Downloadables
+	// Items is a list of definitions for downloadable mod files.
+	Items net.Downloadables
 }
 
 // RawDirectory values act as JSON import containers for Directory values.
@@ -51,7 +51,7 @@ func (this *Directory) FetchTo(dir string, num int, verbose bool) (<-chan *grab.
 	if err := this.Clean(dir); err != nil {
 		return nil, 0, err
 	}
-    return this.Items.GetFiles(dir, num)
+	return this.Items.GetFiles(dir, num)
 }
 
 // Clean scans the filesystem path and disables any jar files that do
@@ -81,7 +81,7 @@ func (this *Directory) Clean(dir string) error {
 			continue
 		} else if mod, ok := fileMap[el.Name()]; ok {
 			// Mod should exist - verify checksum
-            err = net.VerifyFile(filepath.Join(dir, mod.Filename()),
+			err = net.VerifyFile(filepath.Join(dir, mod.Filename()),
 				mod.Checksum(), mod.Hash())
 			if err != nil {
 				return err
@@ -119,15 +119,15 @@ func (this *Directory) Clean(dir string) error {
 
 // PruneDir deletes all disabled jar files in the given directory.
 func PruneDir(dir string) error {
-    files, err := filepath.Glob(".jar.disabled")
-    if err != nil {
-        return err
-    }
-    for _, f := range files {
-        err := os.Remove(f)
-        if err != nil {
-            return err
-        }
-    }
-    return nil
+	files, err := filepath.Glob(".jar.disabled")
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		err := os.Remove(f)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

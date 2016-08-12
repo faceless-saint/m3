@@ -17,6 +17,12 @@ type DownloadTracker struct {
 	Total     int
 }
 
+type DirectDownloadTracker struct {
+	Name     string
+	Response *grab.Response
+	Interval time.Duration
+}
+
 // Log records the download progress without any ANSI terminal handling
 // or other fancy features, ideal for output to files or DOS terminals.
 func (this *DownloadTracker) Log() {

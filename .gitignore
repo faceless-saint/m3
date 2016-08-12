@@ -30,8 +30,6 @@ mods/
 forge-*.jar
 forge-*.log
 minecraft_server.*
-modpack.json
-m3.conf
 
 # Binaries and release packages
 dist/

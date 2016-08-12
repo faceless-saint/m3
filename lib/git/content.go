@@ -1,10 +1,9 @@
 package git
 
 import (
-	"hash"
 	"github.com/faceless-saint/m3/lib/net"
+	"hash"
 )
-
 
 // ContentList values represent lists of Content values.
 type ContentList []Content
@@ -25,7 +24,7 @@ func (this *Content) Checksum() string { return this.Sha }
 func (this *Content) Hash() hash.Hash {
 	return &net.GitHash{}
 }
- 
+
 // JustFiles returns a new ContentList containing only the file elements
 // of the given list (no directory elements).
 func (this *ContentList) JustFiles() ContentList {

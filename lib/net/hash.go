@@ -37,9 +37,9 @@ func DefaultHash() hash.Hash { return sha256.New() }
 // ByteChecksum returns the hex-encoded checksum of the data bytes.
 func ByteChecksum(data []byte, h hash.Hash) string {
 	h.Write(data)
-    checksum := fmt.Sprintf("%x", h.Sum([]byte{}))
-    h.Reset()
-    return checksum
+	checksum := fmt.Sprintf("%x", h.Sum([]byte{}))
+	h.Reset()
+	return checksum
 }
 
 // StringChecksum returns the hex-encoded checksum of the string.
@@ -49,11 +49,11 @@ func StringChecksum(str string, h hash.Hash) string {
 
 // FileChecksum returns the hex-encoded checksum of the file.
 func FileChecksum(file string, h hash.Hash) (string, error) {
-    data, err := ioutil.ReadFile(file)
-    if err != nil {
-        return "", err
-    }
-    return ByteChecksum(data, h), nil
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		return "", err
+	}
+	return ByteChecksum(data, h), nil
 }
 
 // Digest returns a short digest consisting of the first 'n' characters
@@ -73,18 +73,18 @@ func VerifyBytes(data []byte, checksum string, h hash.Hash) bool {
 // checksum is empty.
 func VerifyFile(file, checksum string, h hash.Hash) error {
 	sum, err := FileChecksum(file, h)
-    if err != nil {
-        return err
-    }
-    if len(checksum) > 0 {
-        if sum != checksum {
-            err := os.RemoveAll(file)
-            if err != nil {
-                return err
-            }
-        }
-    }
-    return nil
+	if err != nil {
+		return err
+	}
+	if len(checksum) > 0 {
+		if sum != checksum {
+			err := os.RemoveAll(file)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // ByteCountToString returns a human readable representation of the

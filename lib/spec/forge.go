@@ -7,12 +7,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // Installer values represent downloadable Forge installer files.
 type Installer struct {
 	Version        string
 	checksum       string
+	hash           hash.Hash
 	ServerChecksum string
 }
 
@@ -24,8 +26,18 @@ type RawInstaller struct {
 }
 
 // NewInstaller returns a new Install from the given RawInstaller.
-func NewInstaller(raw *RawInstaller) Installer {
-	return Installer{raw.Version, raw.Checksum, raw.ServerChecksum}
+func NewInstaller(raw *RawInstaller) (*Installer, error) {
+	// Determine checksum and hashing algorithm
+	hashsum := strings.SplitN(raw.Checksum, ":", 2)
+	if len(hashsum) < 2 {
+		// Default to SHA256 if no algorithm is given
+		hashsum = []string{"sha256", hashsum[0]}
+	}
+	h, err := net.NewHash(hashsum[0])
+	if err != nil {
+		return nil, err
+	}
+	return &Installer{raw.Version, hashsum[1], h, raw.ServerChecksum}, nil
 }
 
 func (this *Installer) Filename() string {
@@ -36,7 +48,7 @@ func (this *Installer) Url() string {
 		"forge/" + this.Version + "/forge-" + this.Version + "-installer.jar"
 }
 func (this *Installer) Checksum() string { return this.checksum }
-func (this *Installer) Hash() hash.Hash  { return net.DefaultHash() }
+func (this *Installer) Hash() hash.Hash  { return this.hash }
 
 // Fetch downloads the forge installer for the Spec
 func (this *Installer) Fetch(verbose bool) (*grab.Response, error) {
@@ -46,7 +58,7 @@ func (this *Installer) Fetch(verbose bool) (*grab.Response, error) {
 		return nil, err
 	}
 	// Download the Forge installer
-    return net.GetFile(this, "")
+	return net.GetFile(this, "")
 }
 
 // Install runs the Forge installer and installs server files.

@@ -2,7 +2,6 @@ package net
 
 import (
 	"encoding/hex"
-	"fmt"
 	"github.com/cavaliercoder/grab"
 	"hash"
 	"os"
@@ -12,12 +11,12 @@ import (
 // Downloadable is the interface for files hosted at public URLs.
 type Downloadable interface {
 	// Url returns the download URL for the file.
-    Url() string
-    // Filename returns the name to save the file as.
+	Url() string
+	// Filename returns the name to save the file as.
 	Filename() string
-    // Checksum returns the checksum used to validate the file.
+	// Checksum returns the checksum used to validate the file.
 	Checksum() string
-    // Hash returns the hash.Hash used to compute the checksum.
+	// Hash returns the hash.Hash used to compute the checksum.
 	Hash() hash.Hash
 }
 
@@ -46,13 +45,13 @@ func (this *Downloadables) GetFilesDeferred(dir string) ([]*grab.Request, error)
 	for _, dl := range *this {
 		destination := filepath.Join(dir, dl.Filename())
 		if _, err := os.Stat(destination); err != nil {
-            req, err := GetFileDeferred(dl, destination)
-            if err != nil {
-                return nil, err
-            }
-            reqs = append(reqs, req)
-        }
-    }
+			req, err := GetFileDeferred(dl, destination)
+			if err != nil {
+				return nil, err
+			}
+			reqs = append(reqs, req)
+		}
+	}
 	return reqs, nil
 }
 
@@ -64,8 +63,8 @@ func GetFile(dl Downloadable, file string) (*grab.Response, error) {
 	if err != nil {
 		return nil, err
 	} else if req == nil {
-        return nil, nil
-    }
+		return nil, nil
+	}
 	// Execute the request with the default client.
 	client := grab.NewClient()
 	client.UserAgent = "m3"
@@ -80,33 +79,32 @@ func GetFileDeferred(dl Downloadable, file string) (*grab.Request, error) {
 		file = dl.Filename()
 	}
 	if _, err := os.Stat(file); err == nil {
-        // File already exists - skip download.
-        return nil, nil
-        err := VerifyFile(file, dl.Checksum(), dl.Hash())
-        if err != nil {
-            return nil, err
-        }
-        if _, err := os.Stat(file); err == nil {
-            // File verification passed - skip download.
-            fmt.Printf("%s already found\n", file)
-            return nil, nil
-        }
-    }
-    // Create the download request
-    req, err := grab.NewRequest(dl.Url())
+		// File already exists - skip download.
+		return nil, nil
+		err := VerifyFile(file, dl.Checksum(), dl.Hash())
+		if err != nil {
+			return nil, err
+		}
+		if _, err := os.Stat(file); err == nil {
+			// File verification passed - skip download.
+			return nil, nil
+		}
+	}
+	// Create the download request
+	req, err := grab.NewRequest(dl.Url())
 	if err != nil {
 		return nil, err
 	}
-    // Attempt to add the file's checksum for verification.
+	// Attempt to add the file's checksum for verification.
 	if len(dl.Checksum()) != 0 {
 		if checksum, err := hex.DecodeString(dl.Checksum()); err == nil {
 			req.Checksum = checksum
 			req.Hash = dl.Hash()
 		}
 	}
-    // Make sure the target directory exists.
+	// Make sure the target directory exists.
 	os.MkdirAll(filepath.Dir(file), 0755)
 	req.RemoveOnError = true
 	req.Filename = file
-    return req, err
+	return req, err
 }

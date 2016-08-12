@@ -52,19 +52,17 @@ type Raw struct {
 }
 
 // FromFile returns a new Spec parsed from the given JSON file.
-func FromFile(file string, verbose, very_verbose bool) (*Spec, error) {
+func FromFile(file string) (*Spec, error) {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
-	if verbose {
-		fmt.Printf("Local spec: %s\n", file)
-	}
-	return FromJSON(data, verbose, very_verbose)
+	fmt.Printf("Local spec: %s\n", file)
+	return FromJSON(data)
 }
 
 // FromRemote returns a new Spec parsed from remote JSON data.
-func FromRemote(url string, verbose, very_verbose bool) (*Spec, error) {
+func FromRemote(url string) (*Spec, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -74,20 +72,18 @@ func FromRemote(url string, verbose, very_verbose bool) (*Spec, error) {
 	if err != nil {
 		return nil, err
 	}
-	if verbose {
-		fmt.Printf("Remote spec: %s\n", url)
-	}
-	return FromJSON(page, verbose, very_verbose)
+	fmt.Printf("Remote spec: %s\n", url)
+	return FromJSON(page)
 }
 
 // FromGitHub returns a new Spec parsed from the given GitHub content.
-func FromGitHub(repository, path string, verbose, very_verbose bool) (*Spec, error) {
+func FromGitHub(repository, path string) (*Spec, error) {
 	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/master/%s", repository, path)
-	return FromRemote(url, verbose, very_verbose)
+	return FromRemote(url)
 }
 
 // FromJSON returns a new Spec parsed raw JSON data.
-func FromJSON(data []byte, verbose, very_verbose bool) (*Spec, error) {
+func FromJSON(data []byte) (*Spec, error) {
 	var raw Raw
 	err := json.Unmarshal(data, &raw)
 	if err != nil {
@@ -97,13 +93,12 @@ func FromJSON(data []byte, verbose, very_verbose bool) (*Spec, error) {
 	if err != nil {
 		return nil, err
 	}
-	spec := Spec{Forge: NewInstaller(&raw.Forge), Config: raw.Config, Mods: *mods}
-	if very_verbose {
-		fmt.Printf("\n%+v\n\n", spec)
+	forge, err := NewInstaller(&raw.Forge)
+	if err != nil {
+		return nil, err
 	}
-	if verbose {
-		fmt.Printf("Forge version: %s\nConfig source: %v\n",
-			spec.Forge.Version, spec.Config.Repository)
-	}
+	spec := Spec{Forge: *forge, Config: raw.Config, Mods: *mods}
+	fmt.Printf("Forge version: %s\nConfig source: %v\n",
+		spec.Forge.Version, spec.Config.Repository)
 	return &spec, nil
 }

@@ -1,10 +1,10 @@
 package spec
 
 import (
-    "github.com/cavaliercoder/grab"
-    "github.com/faceless-saint/m3/lib/net"
-    "github.com/faceless-saint/m3/lib/git"
-    "strings"
+	"github.com/cavaliercoder/grab"
+	"github.com/faceless-saint/m3/lib/git"
+	"github.com/faceless-saint/m3/lib/net"
+	"strings"
 )
 
 // Config values represent Forge mod configurations hosted on GitHub.

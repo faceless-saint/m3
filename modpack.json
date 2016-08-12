@@ -1,0 +1,19 @@
+{
+  "forge": {
+    "version": "1.10.2-12.18.1.2011",
+    "checksum": "sha256:5736da99f41e83bc1c1b6044a021f766429e17a9bbdbdcd8101659d704f43661"
+  },
+  "mods": {
+    "items":[{
+    "name": "auto-sapling",
+    "curse": "2309607",
+    "checksum": "sha256:c8b13d90fbbbf191ed20e4f8c845048fdd3257003c065b0a8179c044f723cdac"
+  }],
+  "ignore": [
+    "ignore_this_file.jar"
+  ]},
+  "config": {
+    "repository": "faceless-saint/olympus-unstable",
+    "path": "minecraft/config"
+  }
+}
